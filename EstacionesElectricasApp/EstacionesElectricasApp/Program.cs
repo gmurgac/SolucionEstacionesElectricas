@@ -6,21 +6,34 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Configuration;
+using EstacionesModel.DAL;
+using EstacionesModel.DTO;
 
 namespace EstacionesElectricasApp
 {
     public partial class Program
     {
+        static IMedicionesDAL dalMediciones = MedicionesDALFactory.CreateDAL();
         public static void Main(string[] args)
         {
-
-            Console.WriteLine("Iniciando hilo del Server");
-            int puerto = Convert.ToInt32(ConfigurationManager.AppSettings["puerto"]);
-            HiloServer hiloServer = new HiloServer(puerto);
-            Thread t = new Thread(new ThreadStart(hiloServer.Ejecutar));
-            t.IsBackground = true;
-            t.Start();
-            while (true) ;
+            Boolean on = true;
+            while (on)
+            {
+                Console.WriteLine("1. Iniciar Servicio\n2. Ver registro de mediciones");
+                string respuesta = Console.ReadLine().Trim();
+                switch (respuesta)
+                {
+                    case "1":
+                        IniciarServicio();
+                        break;
+                    case "2":
+                        VerRegistros();
+                        break;
+                }
+            }
+            
+            
+            
         }
     }
 }

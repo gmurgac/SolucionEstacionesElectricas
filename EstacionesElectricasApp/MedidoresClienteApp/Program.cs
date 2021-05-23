@@ -12,42 +12,74 @@ using SocketsUtils;
 
 namespace MedidoresClienteApp
 {
-    public class Program
+    public partial class Program
     {
+        
         public static void Main(string[] args)
         {
+        string idMedidor;
+        string tipoMedidor;
+        string fechaMedicion;
+        string valorMedicion;
+        string estadoMedicion;
+            string respuestaServidor;
 
-            string ip = ConfigurationManager.AppSettings["ip"];
+        string ip = ConfigurationManager.AppSettings["ip"];
             int puerto = Convert.ToInt32(ConfigurationManager.AppSettings["puerto"]);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Iniciando conexion");
-            SocketsUtils.ClienteSocket clienteSocket = new SocketsUtils.ClienteSocket(puerto, ip);
+            ClienteSocket clienteSocket = new ClienteSocket(puerto, ip);
             if (clienteSocket.Conectar())
             {
-                Console.WriteLine("Conectado");
-                //Protocolo de comunicacion
-                string mensajeServer = "";
 
-                Console.WriteLine(clienteSocket.Leer().Trim()); //Servidor envia ingrese fecha|nro |tipo
-                string respuestaCli = Console.ReadLine().Trim(); //cliente responde
-                clienteSocket.Escribir(respuestaCli);
-                Console.WriteLine(clienteSocket.Leer().Trim()); //servidor envia |WAIT
-                                                                //CLIENTE DEBE COMPROBAR QUE VIENE COMANDO WAIT
-                respuestaCli = Console.ReadLine().Trim();
-                clienteSocket.Escribir(respuestaCli); //ESCRIBE nro|fecha|tipo|valor|{estado}opcional|UPDATE
-                clienteSocket.CerrarConexion();
-                Console.ReadKey();
+                //Seleccion tipo de medidor , se obtiene tipo medidor,
+                tipoMedidor = GetTipo();
+                //ingresar fecha
+                fechaMedicion = GetFecha();
+                //ingresar Id
+                idMedidor = GetId();
+                //Enviar a servidor
+                clienteSocket.Escribir(fechaMedicion + "|" + idMedidor + "|" + tipoMedidor);
+
+                //VALIDACION SERVER
+                respuestaServidor = clienteSocket.Leer().Trim();
+
+                string[] respuestaWait = respuestaServidor.Split('|');
+                //CLIENTE DEBE COMPROBAR QUE VIENE COMANDO WAIT
+                Console.WriteLine(respuestaServidor);
+                if (respuestaWait[respuestaWait.Length-1] == "WAIT")
+                {
+                    
+                    valorMedicion = GetValor();
+                    estadoMedicion = GetEstado();
+                    if(estadoMedicion == "")
+                    {
+                        
+                        clienteSocket.Escribir(idMedidor + "|" + fechaMedicion + "|" + tipoMedidor + "|" + valorMedicion + "|" + "UPDATE"); //ESCRIBE nro|fecha|tipo|valor|{estado}opcional|UPDATE
+                        Console.WriteLine(clienteSocket.Leer().Trim()); //Server envia Id|OK o FECHA|ID|ERROR
+                        
+                    }
+                    else
+                    {
+                        clienteSocket.Escribir(idMedidor + "|" + fechaMedicion + "|" + tipoMedidor + "|" + valorMedicion + "|" + estadoMedicion + "|" + "UPDATE"); //ESCRIBE nro|fecha|tipo|valor|{estado}opcional|UPDATE
+                        Console.WriteLine(clienteSocket.Leer().Trim()); //Server envia Id|OK o FECHA|ID|ERROR
+                    }
+                    
 
 
+                }
+               
             }
-            else {
+            else
+            {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Error al conectar");
-                Console.ReadKey();
+                Console.WriteLine("No se pudo conectar");
+
             }
 
-
-
+            
+           
+            //Console.ReadKey();
         }
         }
     }

@@ -60,13 +60,13 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Mensajero\Mensajero\MensajeroApp\SocketsUtils\SocketsUtils.csproj">
-      <Project>{F657081D-6E05-4950-B367-CF99D6DC44D6}</Project>
-      <Name>SocketsUtils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EstacionesModel\EstacionesModel.csproj">
       <Project>{88331A6A-3CFC-4FA8-A8C6-E758367BC629}</Project>
       <Name>EstacionesModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SocketsUtilities\SocketsUtilities.csproj">
+      <Project>{022bea77-a19b-471e-9407-85a9bdd000df}</Project>
+      <Name>SocketsUtilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

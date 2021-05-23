@@ -34,99 +34,91 @@ namespace EstacionesModel.DAL
             
         }
 
-        //public List<Medicion> ObtenerLecturasConsumo()
-        //{
-        //    List<Medicion> lista = new List<Medicion>();
-
-        //    try
-        //    {
-        //        using (StreamReader reader = new StreamReader(archivo2))
-        //        {
-        //            string lineaTexto = null;
-        //            do
-        //            {
-        //                if (lineaTexto != null)
-        //                {
-        //                    string[] textoArray = lineaTexto.Split(':');
-        //                    Medicion m = new Medicion()
-        //                    {
-        //                        Id = Convert.ToInt32(textoArray[0]),
-        //                        Fecha = Convert.ToDateTime(textoArray[1]),
-        //                        Tipo = Convert.ToInt32(textoArray[2]),
-        //                        Valor = textoArray[3]
-
-        //                    };
-        //                }
-        //            } while (lineaTexto != null);
-        //        }
-        //    }
-        //    catch (IOException ex)
-        //    {
-        //        lista = null;
-        //    }
-        //    return lista;
-        //}
-
-        //public List<Medicion> ObtenerLecturasTrafico()
-        //{
-        //    List<Medicion> lista = new List<Medicion>();
-
-        //    try {
-        //        using (StreamReader reader = new StreamReader(archivo))
-        //        {
-        //            string lineaTexto = null;
-        //            do
-        //            {
-        //                if(lineaTexto != null)
-        //                {
-        //                    string[] textoArray = lineaTexto.Split('|');
-        //                    Medicion m = new Medicion()
-        //                    {
-        //                        Id = Convert.ToInt32(textoArray[0]),
-        //                        Fecha = Convert.ToDateTime(textoArray[1]),
-        //                        Tipo = Convert.ToInt32(textoArray[2]),
-        //                        Valor = textoArray[3]
-
-        //                    };
-        //                }
-        //            } while (lineaTexto != null);
-        //        }
-        //    }
-        //    catch(IOException ex) {
-        //        lista = null;
-        //    }
-        //    return lista;
-        //}
-
-        public void RegistrarConsumo(Medicion m)
+        public List<Medicion> ObtenerLecturasConsumo()
         {
+            List<Medicion> lista = new List<Medicion>();
+
             try
             {
-                using (StreamWriter writer = new StreamWriter(archivo, true))
+                using (StreamReader reader = new StreamReader(archivo2))
                 {
-                    writer.WriteLine(m);
-                    writer.Flush();
-                }
-            }catch(IOException ex)
-            {
-
-            }
-        }
-        public void RegistrarTrafico(Medicion m)
-        {
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(archivo2, true))
-                {
-                    writer.WriteLine(m);
-                    writer.Flush();
+                    string lineaTexto = null;
+                    do
+                    {
+                        lineaTexto = reader.ReadLine();
+                        if (lineaTexto != null)
+                        {
+                            string json = lineaTexto;
+                            Medicion lectura = JsonConvert.DeserializeObject<Medicion>(json);
+                            lista.Add(lectura);
+                        }
+                    } while (lineaTexto != null);
                 }
             }
             catch (IOException ex)
             {
-
+                lista = null;
             }
+            return lista;
         }
+
+        public List<Medicion> ObtenerLecturasTrafico()
+        {
+            List<Medicion> lista = new List<Medicion>();
+
+            try
+            {
+                using (StreamReader reader = new StreamReader(archivo))
+                {
+                    string lineaTexto = null;
+                    do
+                    {
+                        lineaTexto = reader.ReadLine();
+                        if (lineaTexto != null)
+                        {
+                            string json = lineaTexto;
+                            Medicion lectura = JsonConvert.DeserializeObject<Medicion>(json);
+                            lista.Add(lectura);
+                        }
+                    } while (lineaTexto != null);
+                }
+            }
+            catch (IOException ex)
+            {
+                lista = null;
+            }
+            return lista;
+        }
+
+        //public void RegistrarConsumo(Medicion m)
+        //{
+        //    try
+        //    {
+        //        using (StreamWriter writer = new StreamWriter(archivo, true))
+        //        {
+        //            writer.WriteLine(m);
+        //            writer.Flush();
+        //        }
+        //    }catch(IOException ex)
+        //    {
+
+        //    }
+        //}
+        //public void RegistrarTrafico(Medicion m)
+        //{
+        //    try
+        //    {
+        //        using (StreamWriter writer = new StreamWriter(archivo2, true))
+        //        {
+        //            writer.WriteLine(m);
+        //            writer.Flush();
+        //        }
+        //    }
+        //    catch (IOException ex)
+        //    {
+
+        //    }
+        //}
 
         public void RegistrarLectura(Medicion m)
         {
@@ -169,14 +161,6 @@ namespace EstacionesModel.DAL
         }
       
 
-        public List<Medicion> ObtenerLecturasTrafico()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Medicion> ObtenerLecturasConsumo()
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }
